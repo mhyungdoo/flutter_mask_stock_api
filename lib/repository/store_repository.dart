@@ -23,7 +23,12 @@ class StoreRepository {
       });
     print('fetch완료');
 
-    return stores;
+    return stores.where((e) {
+      //원하는 조건만 보여주는 코드
+      return e.remainStat == 'plenty' ||
+          e.remainStat == 'some' || // ||는 or 연산자
+          e.remainStat == 'few';
+    }).toList();
 
   }
 
