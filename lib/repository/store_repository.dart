@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 class StoreRepository {
 
-  Future<List<Store>> fetch() async {
+  Future<List<Store>> fetch(double lat, double lng) async {
     final stores = List<Store>();
 
     var url =

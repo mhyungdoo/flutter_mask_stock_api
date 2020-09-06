@@ -40,7 +40,6 @@ class MainPage extends StatelessWidget {
   }
 
 
-
   Widget loadingWidget() {
     return Center(
       child: Column(
