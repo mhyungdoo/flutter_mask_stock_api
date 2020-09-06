@@ -1,3 +1,5 @@
+// 모델 클래스
+
 class Store {
   String code;
   String name;

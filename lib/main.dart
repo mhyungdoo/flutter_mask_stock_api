@@ -1,7 +1,8 @@
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mask_stock_api/model/store.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_mask_stock_api/repository/store_repository.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -27,41 +28,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final stores = List<Store>();
-  var isLoading = true;
+  var stores = List<Store>();
+  var isLoading = false;
 
-  Future fetch() async {
-    setState(() {
-      isLoading = true;
-    });
-    var url =
-        'https://gist.githubusercontent.com/junsuk5/bb7485d5f70974deee920b8f0cd1e2f0/raw/063f64d9b343120c2cb01a6555cf9b38761b1d94/sample.json';
-
-    var response = await http.get(url);
-    final jsonResult = jsonDecode(utf8.decode(response.bodyBytes));
-    final jsonStores = jsonResult['stores'];
-
-    setState(() {
-      stores.clear(); // 값이 담겨져 있으면 지워준다.
-      jsonStores.forEach((e) {
-        stores.add(Store.fromJson(e)); //json 값을 store에 저장
-      });
-      isLoading = false;
-    });
-    //  print(jsonResult['stores']);  // JSON에서 불러오고 싶은 key 값 지정
-    //  print('Response status: ${response.statusCode}');
-    //  print('Response body: ${utf8.decode(response.bodyBytes)}');  //한글 깨지지 않도록 변경
-    //  다시 JSON 형태로 변경
-    print('fetch완료');
-
-  }
+    final storeRepository = StoreRepository();
 
   // fetch를 실행시켜 줌
 
   @override
   void initState() {
     super.initState();
-    fetch();
+
+    storeRepository.fetch().then((value) {
+      setState(() {
+        stores = value;
+      });
+    });
   }
 
   @override
@@ -76,7 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: fetch,
+            onPressed: (){
+
+              storeRepository.fetch().then((e) {
+                setState(() {
+                  stores = e;
+                });
+              });
+
+            },
           )
         ],
       ),
@@ -106,11 +96,11 @@ class _MyHomePageState extends State<MyHomePage> {
     var description = '판매중지';
     var color = Colors.black;
 
-    if (store.remainStat == 'plenty'){
-      remainStat = '충분';
-      description = '100개 이상';
-      color = Colors.green;
-    }
+//    if (store.remainStat == 'plenty'){
+//      remainStat = '충분';
+//      description = '100개 이상';
+//      color = Colors.green;
+//    }
 
     switch (store.remainStat){
       case 'plenty':
