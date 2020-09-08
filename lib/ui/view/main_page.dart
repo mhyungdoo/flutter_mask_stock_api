@@ -24,20 +24,36 @@ class MainPage extends StatelessWidget {
           )
         ],
       ),
-      body: storeModel.isLoading == true
-          ? loadingWidget()
-          : ListView(
-        // 로딩 중이면 로딩 화면을 보여주고 로딩이 false면 리스트뷰를 보여준다
-        children: storeModel.stores.map((e) {
-          return ListTile(
-            title: Text(e.name),
-            subtitle: Text(e.addr),
-            trailing: RemainStatListTile(e),
-          );
-        }).toList(),
-      ),
+      body: _buildBody(storeModel),
     );
   }
+
+  Widget _buildBody(StoreModel storeModel) {
+    if (storeModel.isLoading == true) {
+      return loadingWidget();
+    }
+
+    if (storeModel.stores.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text ('반경 5km 이내에 재고가 있는 매장이 없습니다.'),
+            Text('또는 인터넷이 연결되어 있는지 확인해 주세요')
+          ],
+        ),
+      );
+    }
+
+    return ListView(
+      // 로딩 중이면 로딩 화면을 보여주고 로딩이 false면 리스트뷰를 보여준다
+      children: storeModel.stores.map((e) {
+        return RemainStatListTile(e);
+      }).toList(),
+    );
+
+  }
+
 
 
   Widget loadingWidget() {
